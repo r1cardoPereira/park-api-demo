@@ -1,6 +1,5 @@
 package com.github.r1cardopereira.service;
 
-
 import com.github.r1cardopereira.entity.Usuario;
 import com.github.r1cardopereira.exception.EntityNotFoundException;
 import com.github.r1cardopereira.exception.PasswordInvalidException;
@@ -23,40 +22,40 @@ public class UsuarioService {
     public Usuario salvar(Usuario usuario) {
         try {
             return usuarioRepository.save(usuario);
-        }catch (DataIntegrityViolationException ex){
-            throw  new UsernameUniqueViolationException(String.format("Username '%s' já cadastrado", usuario.getUsername()));
+        } catch (DataIntegrityViolationException ex) {
+            throw new UsernameUniqueViolationException(
+                    String.format("Username '%s' já cadastrado", usuario.getUsername()));
         }
     }
 
     @Transactional(readOnly = true)
-    public Usuario getById (Long id) {
+    public Usuario getById(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(
-                        () -> new EntityNotFoundException(String.format("Usuário id=%s não encontrado.", id))
-                );
+                        () -> new EntityNotFoundException(String.format("Usuário id=%s não encontrado.", id)));
     }
 
     @Transactional
-    public Usuario changePassword(Long id, String senhaAtual, String novaSenha, String confirmaNovaSenha){
-        if (!novaSenha.equals(confirmaNovaSenha)){
+    public Usuario changePassword(Long id, String senhaAtual, String novaSenha, String confirmaNovaSenha) {
+        Usuario user = getById(id);
+
+        if (!novaSenha.equals(confirmaNovaSenha)) {
             throw new PasswordInvalidException("Nova senha não confere com a confirmação de senha");
         }
-        Usuario user = getById(id);
-        if (!user.getPassword().equals(senhaAtual)){
+
+        if (!user.getPassword().equals(senhaAtual)) {
             throw new PasswordInvalidException("Senha atual não confere com a senha informada");
 
         }
         user.setPassword(novaSenha);
 
-        return  user;
+        return user;
     }
 
     @Transactional(readOnly = true)
     public List<Usuario> readAll() {
         return usuarioRepository.findAll();
     }
-
-
 
     @Transactional
     public void deleteById(Long id) {
