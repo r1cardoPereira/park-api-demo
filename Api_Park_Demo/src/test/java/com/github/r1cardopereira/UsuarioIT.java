@@ -331,7 +331,6 @@ public class UsuarioIT {
 
     }
 
-
     @Test
     public void deletarUsuario_ComIdExistente_RetornarComStatus204() {
 
@@ -342,7 +341,6 @@ public class UsuarioIT {
                 .expectStatus().isNoContent();
             
     }
-
 
     @Test
     public void deletarUsuario_ComIdInexistente_RetornarErrorMessageComStatus404(){
